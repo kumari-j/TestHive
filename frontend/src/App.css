@@ -1,0 +1,17 @@
+/* General Page Styling */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Container to hold the main layout */
+.container {
+    display: flex; /* Use flexbox for layout */
+    height: 100vh; /* Full height of the viewport */
+}
+
+/* Sidebar Title */
+.sidebar h3 {
+    margin-bottom: 20px;
+}
