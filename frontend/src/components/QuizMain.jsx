@@ -20,6 +20,11 @@ const QuizMain = ({
     onPreviousQuestion, // Prop for previous button functionality
     onNextQuestion, // Prop for next button functionality
 }) => {
+    const handleRadioChange = (event) => {
+        const value = event.target.value;
+        onAnswerSelect(value); // Select the new value
+    };
+
     return (
         <Box
             sx={{
@@ -34,15 +39,20 @@ const QuizMain = ({
             </Typography>
             <FormControl component="fieldset">
                 <RadioGroup
-                    value={selectedOption}
-                    onChange={(e) => onAnswerSelect(e.target.value)}
+                    value={selectedOption || ""} // Ensure it can handle empty string for deselection
+                    onClick={handleRadioChange} // Custom handler for deselection
                 >
                     {options.map((option, index) => (
                         <FormControlLabel
                             key={index}
                             value={option}
-                            control={<Radio color="primary" />} // MUI Radio component
+                            control={
+                                <Radio 
+                                    color="primary"
+                                />
+                            } // MUI Radio component
                             label={option}
+                            checked={selectedOption === option} // Ensure the correct option is checked
                         />
                     ))}
                 </RadioGroup>

@@ -58,20 +58,48 @@ function App() {
 
     const handleAnswerSelect = (selectedOption) => {
         let updatedQuestions = [...questions];
-        updatedQuestions[currentQuestionIndex].selectedOption = selectedOption;
-        if (updatedQuestions[currentQuestionIndex].status !== "green") {
-            updatedQuestions[currentQuestionIndex].status = "green";
-            setAnsweredCount(answeredCount + 1);
+        let currentQuestion = updatedQuestions[currentQuestionIndex];
+
+        // Case 1: Deselect the option if it's already selected
+        if (currentQuestion.selectedOption === selectedOption) {
+            // Set the selected option to null/empty string, indicating deselection
+            currentQuestion.selectedOption = "";
+
+            // Decrease the count only if the status was previously "green" (answered)
+            if (currentQuestion.status === "green") {
+                setAnsweredCount(answeredCount - 1); // Decrease answered count
+            }
+
+            // Set the question status to "yellow" (visited but not answered)
+            currentQuestion.status = "yellow";
+        } else {
+            // Case 2: If it's a new option, mark it as selected
+            currentQuestion.selectedOption = selectedOption;
+
+            // Only increase the count if the question wasn't answered previously
+            if (currentQuestion.status !== "green") {
+                setAnsweredCount(answeredCount + 1); // Increment the answered count
+            }
+
+            // Update the question status to "green" (answered)
+            currentQuestion.status = "green";
         }
+
+        // Update the state for questions
         setQuestions(updatedQuestions);
 
-        // Update selected answers state
+        // Update selectedAnswers with the current selection (or reset if deselected)
         setSelectedAnswers((prev) => {
             const newAnswers = [...prev];
-            newAnswers[currentQuestionIndex] = selectedOption; // Save answer for the current question
+            newAnswers[currentQuestionIndex] =
+                currentQuestion.selectedOption || ""; // Set to empty string if deselected
             return newAnswers;
         });
     };
+
+
+
+
 
     const handleMarkForReview = () => {
         let updatedQuestions = [...questions];
