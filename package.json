@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "electron": "^33.2.0"
+  },
+  "scripts": {
+    "start": "electron electron/main.js",
+    "build": "react-scripts build",
+    "start-backend": "node backend/server.js",
+    "electron-dev": "npm-run-all --parallel start-backend build start"
+}
+
+}
