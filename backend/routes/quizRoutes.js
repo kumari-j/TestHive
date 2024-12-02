@@ -36,7 +36,8 @@ router.get("/questions", async (req, res) => {
 // Route to submit answers and calculate the score
 router.post("/submit", async (req, res) => {
     const { username, quizId, answers, timeTaken } = req.body;
-
+    console.log("Bkend"+timeTaken);
+    
     // Validate required fields
     if (
         !username ||

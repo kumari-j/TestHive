@@ -56,7 +56,7 @@ function App() {
         fetchQuestions();
     }
         if (isAdmin)
-        {
+        {            
             setLoading(false);
         }
 }, [quizId, isAuthenticated,isAdmin]);
@@ -115,8 +115,8 @@ useEffect(() => {
 
     const handlePreviousQuestion = () => {
         const updatedQuestions = [...questions];
-        if (!updatedQuestions[currentQuestionIndex].selectedOption) {
-            updatedQuestions[currentQuestionIndex].status = "red";
+        if (!updatedQuestions[currentQuestionIndex].selectedOption||updatedQuestions[currentQuestionIndex].selectedOption=="") {
+            updatedQuestions[currentQuestionIndex].status = "yellow";
         }
         setQuestions(updatedQuestions);
         setCurrentQuestionIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -124,8 +124,8 @@ useEffect(() => {
 
     const handleNextQuestion = () => {
         const updatedQuestions = [...questions];
-        if (!updatedQuestions[currentQuestionIndex].selectedOption) {
-            updatedQuestions[currentQuestionIndex].status = "red";
+        if (!updatedQuestions[currentQuestionIndex].selectedOption||updatedQuestions[currentQuestionIndex].selectedOption=="") {
+            updatedQuestions[currentQuestionIndex].status = "yellow";
         }
         setQuestions(updatedQuestions);
         setCurrentQuestionIndex((prevIndex) =>
@@ -158,11 +158,11 @@ useEffect(() => {
 
         try {
             const timeTakenToComplete = quizDuration - remainingTime;
-            setTimeTaken(timeTakenToComplete);
-
+            setTimeTaken(timeTakenToComplete);       
+            // console.log(timeTakenToComplete,timeTaken,quizDuration,remainingTime);
             const formattedAnswers = questions.map((q) => ({
                 questionId: q._id,
-                selectedOption: q.selectedOption,
+                selectedOption: q.selectedOption||"",
             }));
 
             const response = await axios.post(
@@ -171,7 +171,7 @@ useEffect(() => {
                     username: username, 
                     quizId: quizId,
                     answers: formattedAnswers,
-                    timeTaken: timeTaken,
+                    timeTaken: timeTakenToComplete,
                 }
             );
             setScore(response.data.score);
@@ -198,7 +198,7 @@ useEffect(() => {
                     setQuizId={setQuizId}
                     setIsAdmin={setIsAdmin}
                 />
-                <Signup />
+                {/* <Signup /> */}
             </Container>
         );
     }
@@ -207,7 +207,7 @@ useEffect(() => {
         return <div>Loading...</div>;
     }
 
-    if (quizCompleted) {
+    if (quizCompleted) {        
         return (
             <PostTestScreen score={score} timeTaken={formatTime(timeTaken)} />
         );
@@ -216,7 +216,7 @@ useEffect(() => {
     return (
         <Container maxWidth="lg">
             <Routes>
-                <Route path="/signup" element={<Signup />} />
+                {/* <Route path="/signup" element={<Signup />} /> */}
                 <Route path="/login" element={<Login />} />
                 <Route
                     path="/"
@@ -229,6 +229,7 @@ useEffect(() => {
                                     quizTitle="Sample Quiz"
                                     answeredCount={answeredCount}
                                     remainingTime={formatTime(remainingTime)}
+                                    application_id={username}    
                                 />
                                 <Box sx={{ display: "flex", mt: 8 }}>
                                     <Sidebar

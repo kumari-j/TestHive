@@ -6,7 +6,8 @@ const quizRoutes = require("./routes/quizRoutes");
 const resultRoutes = require("./routes/resultRoutes"); // Import result routes
 const authRoutes = require("./routes/authRoutes");
 
-dotenv.config();
+// Explicitly load the `.env` file relative to the backend folder
+dotenv.config({ path: require("path").resolve(__dirname, ".env") });
 
 const app = express();
 

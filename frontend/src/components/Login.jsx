@@ -52,12 +52,12 @@ const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
     return (
         <Box sx={{ maxWidth: 400, mx: "auto", mt: 8 }}>
             <Typography variant="h4" component="h1" gutterBottom>
-                Login
+               TestHive - Login
             </Typography>
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <form onSubmit={handleLogin}>
                 <TextField
-                    label="Username"
+                    label="Application ID"
                     variant="outlined"
                     fullWidth
                     margin="normal"
@@ -66,7 +66,7 @@ const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
                     required
                 />
                 <TextField
-                    label="Password"
+                    label="Date of Birth"
                     type="password"
                     variant="outlined"
                     fullWidth
@@ -76,7 +76,7 @@ const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
                     required
                 />
                 <TextField
-                    label="Quiz ID"
+                    label="Exam ID"
                     variant="outlined"
                     fullWidth
                     margin="normal"
@@ -91,7 +91,7 @@ const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
                     fullWidth
                     sx={{ mt: 2 }}
                 >
-                    Login
+                   Login
                 </Button>
             </form>
         </Box>

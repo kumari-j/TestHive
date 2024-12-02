@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 
-const PostTestScreen = ({ score, timeTaken }) => {
+const PostTestScreen = ({ score, timeTaken}) => {
+    
     return (
         <Box
             sx={{

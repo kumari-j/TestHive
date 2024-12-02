@@ -27,7 +27,7 @@ const resultSchema = new Schema({
             },
             selectedOption: {
                 type: String,
-                required: true,
+                // required: true,
             },
             isCorrect: {
                 type: Boolean,
@@ -36,7 +36,7 @@ const resultSchema = new Schema({
         },
     ],
     timeTaken: {
-        type: Number,
+        type: String,
         required: true,
     },
     completedAt: {

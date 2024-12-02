@@ -28,10 +28,13 @@ const QuizMain = ({
     return (
         <Box
             sx={{
-                padding: 3,
+                padding:3,
                 backgroundColor: "#fff",
                 borderRadius: 2,
                 boxShadow: 2,
+                width: "80%",
+                height: "80%",
+                
             }}
         >
             <Typography variant="h5" gutterBottom>
