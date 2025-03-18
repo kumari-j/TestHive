@@ -5,9 +5,11 @@ const mongoose = require("mongoose");
 const quizRoutes = require("./routes/quizRoutes");
 const resultRoutes = require("./routes/resultRoutes"); // Import result routes
 const authRoutes = require("./routes/authRoutes");
+const path = require("path");
 
-// Explicitly load the `.env` file relative to the backend folder
-dotenv.config({ path: require("path").resolve(__dirname, ".env") });
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
 
 const app = express();
 
@@ -24,11 +26,15 @@ mongoose
 app.use("/api/quiz", quizRoutes);
 app.use("/api/results", resultRoutes); // Use result routes
 app.use("/api/auth", authRoutes);
-
+app.use(express.static(path.join(__dirname, "../frontend/build")))
 const PORT = process.env.PORT || 5000;
 
-app.get("/", (req, res) => {
-    res.send("API is running...");
+// app.get("/", (req, res) => {
+//     res.send("API is running...");
+// });
+
+app.get('*',(_,res)=>{
+    res.sendFile(path.resolve(__dirname,"../frontend","build","index.html"));
 });
 
 app.listen(PORT, () => {

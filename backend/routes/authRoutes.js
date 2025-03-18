@@ -13,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 // Route for user signup
 router.post("/signup", async (req, res) => {
     const { username, password } = req.body;
-
+   
     try {
         // Check if user already exists
         const existingUser = await User.findOne({ username });
@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
         // Find user by username
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "Invalid user" });
         }
 
         // Check if the user is an admin
@@ -69,10 +69,16 @@ router.post("/login", async (req, res) => {
         }
 
         // Verify password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: "Invalid credentials" });
+        // const isPasswordValid = await bcrypt.compare(password, user.password);
+        // if (!isPasswordValid) {
+        //     return res.status(400).json({ message: "Invalid password" });
+        // }
+        if (user.password !== password) {
+            return res.status(400).json({ message: "Invalid password" });
         }
+
+       
+        
 
         // Verify quiz ID for regular users (non-admins)
         const quiz = await Quiz.findOne({ quizId });
