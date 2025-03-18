@@ -12,9 +12,9 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 
 const app = express();
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+
 app.use(cors({
-    origin: allowedOrigin,
+    origin: "https://testhive.onrender.com",
     credentials: true,
 }));
 app.use(express.json()); // To parse JSON bodies
