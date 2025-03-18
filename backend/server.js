@@ -12,8 +12,11 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 
 const app = express();
-
-app.use(cors());
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+app.use(cors({
+    origin: allowedOrigin,
+    credentials: true,
+}));
 app.use(express.json()); // To parse JSON bodies
 
 // Connect to MongoDB
@@ -27,16 +30,20 @@ app.use("/api/quiz", quizRoutes);
 app.use("/api/results", resultRoutes); // Use result routes
 app.use("/api/auth", authRoutes);
 app.use(express.static(path.join(__dirname, "../frontend/build")))
-const PORT = process.env.PORT || 5000;
+
 
 // app.get("/", (req, res) => {
 //     res.send("API is running...");
 // });
 
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, "../frontend/build")));
+
 app.get('*',(_,res)=>{
     res.sendFile(path.resolve(__dirname,"../frontend","build","index.html"));
 });
-
+}
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
