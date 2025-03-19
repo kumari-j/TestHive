@@ -14,7 +14,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app = express();
 
 app.use(cors({
-    origin: "https://testhive.onrender.com",
+    origin: ["http://localhost:3000", "https://testhive.onrender.com"],
     credentials: true,
 }));
 app.use(express.json()); // To parse JSON bodies
@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, "../frontend/build")))
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.get('*',(_,res)=>{
+    app.get(/^\/(?!api).*/, (_, res)=>{
     res.sendFile(path.resolve(__dirname,"../frontend","build","index.html"));
 });
 }
