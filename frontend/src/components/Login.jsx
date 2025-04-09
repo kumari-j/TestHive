@@ -3,48 +3,42 @@ import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
-    const [username, setUsernameInput] = useState(""); // use setUsernameInput to handle form input
+const Login = ({ setIsAuthenticated, setUsername, setIsAdmin, setQuizId }) => {
+    const [username, setUsernameInput] = useState("");
     const [password, setPassword] = useState("");
-    const [quizId, setQuizIdInput] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setErrorMessage("");
-        console.log(username, password,quizId);
-        
+
         try {
-            // Make login request to backend
             const response = await axios.post(
                 `${process.env.REACT_APP_BACKEND_URL}/api/auth/login`,
-                { username, password, quizId }
+                { username, password }
             );
 
             if (response.status === 200) {
-                const { token, isAdmin, username } = response.data;
+                const { token, isAdmin, username: returnedUsername, quizId } = response.data;
 
-                // Save session data to local storage
                 localStorage.setItem("token", token);
-                localStorage.setItem("username", username); // store username, not userId
-                localStorage.setItem("quizId", quizId);
+                localStorage.setItem("username", returnedUsername);
                 localStorage.setItem("isAdmin", isAdmin);
 
-                console.log("Setting username:", username);
-                // Update session state
                 setIsAuthenticated(true);
-                setUsername(username); // update with username directly
-                setQuizId(quizId);
+                setUsername(returnedUsername);
                 setIsAdmin(isAdmin);
-                
-                // Redirect based on role
+
+                if (!isAdmin && quizId) {
+                    setQuizId(quizId);  // ✅ Pass quizId to parent
+                }
+
                 navigate("/");
             }
         } catch (error) {
             setErrorMessage(
-                error.response?.data?.message ||
-                    "Login failed. Please try again."
+                error.response?.data?.message || "Login failed. Please try again."
             );
         }
     };
@@ -52,7 +46,7 @@ const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
     return (
         <Box sx={{ maxWidth: 400, mx: "auto", mt: 8 }}>
             <Typography variant="h4" component="h1" gutterBottom>
-               TestHive - Login
+                TestHive - Login
             </Typography>
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <form onSubmit={handleLogin}>
@@ -75,15 +69,6 @@ const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <TextField
-                    label="Exam ID"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={quizId}
-                    onChange={(e) => setQuizIdInput(e.target.value)}
-                    required
-                />
                 <Button
                     type="submit"
                     variant="contained"
@@ -91,7 +76,7 @@ const Login = ({ setIsAuthenticated, setUsername, setQuizId, setIsAdmin }) => {
                     fullWidth
                     sx={{ mt: 2 }}
                 >
-                   Login
+                    Login
                 </Button>
             </form>
         </Box>

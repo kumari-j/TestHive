@@ -15,7 +15,7 @@ const questionSchema = new Schema({
         },
     ],
     correctAnswer: {
-        type: String, // Index of the correct option (0, 1, 2, or 3)
+        type: String,
         required: true,
     },
 });
@@ -32,6 +32,13 @@ const quizSchema = new Schema({
         required: true,
     },
     questions: [questionSchema],
+    allowedStudents: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
+]
+,
     createdAt: {
         type: Date,
         default: Date.now,

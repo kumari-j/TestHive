@@ -1,36 +1,65 @@
 import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
 
-function Sidebar({ questions, navigateToQuestion }) {
+function Sidebar({ questions, navigateToQuestion, answeredCount, remainingTime }) {
     return (
         <Box
             sx={{
                 display: "flex",
-                // marginLeft:"300px",
                 position: "fixed",
-                right:18,
-                // left:0,
+                right: 18,
                 top: 60,
                 width: "70%",
-                height: "30%",
-                // zIndex: 1000,
-                flexDirection: "row",
-                justifyContent: "right",
-                
+                height: "auto",
+                flexDirection: "column",
+                alignItems: "flex-end",
             }}
         >
+            {/* Answered and Timer Card */}
             <Paper
-                elevation={3}
-                sx={{ width: 220, height: "100%", padding: 2 }}
+                elevation={4}
+                sx={{
+                    width: 220,
+                    padding: 2,
+                    borderRadius: "8px",
+                    mb: 2
+                }}
             >
                 <Typography variant="h6" align="center" gutterBottom>
-                    All Questions
+                    Status
+                </Typography>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                    <Typography variant="body1">Answered:</Typography>
+                    <Typography variant="body1" fontWeight="bold">
+                        {answeredCount}
+                    </Typography>
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography variant="body1">Time Left:</Typography>
+                    <Typography variant="body1" fontWeight="bold">
+                        {remainingTime}
+                    </Typography>
+                </Box>
+            </Paper>
+
+            {/* Question Palette Card */}
+            <Paper
+                elevation={4}
+                sx={{
+                    width: 220,
+                    padding: 2,
+                    borderRadius: "8px",
+                    mb: 2
+                }}
+            >
+                <Typography variant="h6" align="center" gutterBottom>
+                    Question Palette
                 </Typography>
                 <Box
                     sx={{
                         display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
                     }}
                 >
                     {questions.map((question, index) => (
@@ -49,7 +78,7 @@ function Sidebar({ questions, navigateToQuestion }) {
                                 color: "#fff",
                                 textAlign: "center",
                                 cursor: "pointer",
-                                transition: "background-color 0.3s",
+                                fontSize: "0.9rem"
                             }}
                         >
                             {index + 1}
@@ -57,11 +86,41 @@ function Sidebar({ questions, navigateToQuestion }) {
                     ))}
                 </Box>
             </Paper>
+
+            {/* Legend Card */}
+            <Paper
+                elevation={4}
+                sx={{
+                    width: 220,
+                    padding: 2,
+                    borderRadius: "8px",
+                }}
+            >
+                <Typography variant="h6" align="center" gutterBottom>
+                    Legend
+                </Typography>
+                {legendData.map((item, i) => (
+                    <Box key={i} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                        <Box 
+                            sx={{
+                                width: 12,
+                                height: 12,
+                                backgroundColor: item.color,
+                                borderRadius: "50%",
+                                marginRight: "8px",
+                            }} 
+                        />
+                        <Typography variant="body2" sx={{ fontSize: "0.9rem" }}>
+                            {item.label}
+                        </Typography>
+                    </Box>
+                ))}
+            </Paper>
         </Box>
     );
 }
 
-// Function to determine color based on question status
+// Status Color Handler
 const getColor = (status) => {
     switch (status) {
         case "green":
@@ -73,9 +132,16 @@ const getColor = (status) => {
         case "indigo":
             return "indigo";
         default:
-            return "#6c757d"; // Default button color
+            return "#6c757d";
     }
 };
 
+// Legend Data
+const legendData = [
+    { color: "green", label: "Answered" },
+    { color: "grey", label: "Not Answered" },
+    { color: "indigo", label: "Marked for Review" },
+    { color: "red", label: "Visited but Not Answered" },
+];
 
 export default Sidebar;

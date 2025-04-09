@@ -10,12 +10,39 @@ import {
     Paper,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useEffect } from "react";
 
 const QuizCreationForm = () => {
+    const [students, setStudents] = useState([]);
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [loadingStudents, setLoadingStudents] = useState(false);
     const [quizName, setQuizName] = useState("");
     const [questions, setQuestions] = useState([]);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+
+    
+
+useEffect(() => {
+    const fetchStudents = async () => {
+        setLoadingStudents(true);
+        try {
+            const res = await axios.get(
+                `${process.env.REACT_APP_BACKEND_URL}/api/users/students`
+            );
+            setStudents(res.data); // Array of user objects
+        } catch (err) {
+            console.error("Failed to fetch students:", err);
+        } finally {
+            setLoadingStudents(false);
+        }
+    };
+
+    fetchStudents();
+}, []);
+
 
     // Function to add a new question
     const addQuestion = () => {
@@ -38,8 +65,13 @@ const QuizCreationForm = () => {
             // Send quiz data to backend
             const response = await axios.post(
                 `${process.env.REACT_APP_BACKEND_URL}/api/quiz/addQuiz`,
-                { quizName, questions }
+                {
+                    quizName,
+                    questions,
+                    allowedStudents: selectedStudents.map((student) => student._id),
+                }
             );
+            
 
             if (response.status === 201) {
                 setMessage(
@@ -179,7 +211,24 @@ const QuizCreationForm = () => {
                 >
                     Add Question
                 </Button>
-
+                <Autocomplete
+    multiple
+    options={students}
+    getOptionLabel={(option) => option.username}
+    value={selectedStudents}
+    onChange={(event, newValue) => setSelectedStudents(newValue)}
+    loading={loadingStudents}
+    renderInput={(params) => (
+        <TextField
+            {...params}
+            label="Select Students"
+            placeholder="Choose students to assign quiz"
+            margin="normal"
+        />
+    )}
+    sx={{ marginTop: "20px" }}
+/>
+   
                 <Button
                     type="submit"
                     variant="contained"

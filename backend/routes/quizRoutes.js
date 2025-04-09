@@ -4,6 +4,8 @@ const express = require("express");
 const router = express.Router();
 const Result = require("../models/Result");
 const Quiz = require("../models/Quiz");
+const authenticateUser = require("../models/authMiddleware");
+
 
 // Helper function to create a unique quiz ID from the quiz name
 const generateQuizId = (quizName) => {
@@ -11,26 +13,32 @@ const generateQuizId = (quizName) => {
 };
 
 /// Route to fetch all quiz questions based on quizId
-router.get("/questions", async (req, res) => {
+router.get("/questions", authenticateUser, async (req, res) => {
     try {
-        const { quizId } = req.query; // Get quizId from query params
+        const { quizId } = req.query;
+        const userId = req.user.userId; // comes from token
+
         if (!quizId) {
             return res.status(400).json({ message: "Quiz ID is required" });
         }
 
-        // Find the quiz by quizId
         const quiz = await Quiz.findOne({ quizId });
         if (!quiz) {
             return res.status(404).json({ message: "Quiz not found" });
         }
 
-        // Send back the questions from the found quiz
+        // Check if the user is authorized to access this quiz
+        if (!quiz.allowedStudents.includes(userId)) {
+            return res.status(403).json({ message: "Access denied: Not allowed for this quiz" });
+        }
+
         res.json(quiz.questions);
     } catch (error) {
         console.error("Error fetching questions:", error);
         res.status(500).json({ message: "Error fetching questions" });
     }
 });
+
 
 
 // Route to submit answers and calculate the score
@@ -102,8 +110,9 @@ router.post("/submit", async (req, res) => {
 });
 
 // Route to add a new quiz
+// Route to add a new quiz
 router.post("/addQuiz", async (req, res) => {
-    const { quizName, questions } = req.body;
+    const { quizName, questions, allowedStudents } = req.body; // 👈 include allowedStudents
 
     try {
         const existingQuiz = await Quiz.findOne({ quizName });
@@ -113,7 +122,7 @@ router.post("/addQuiz", async (req, res) => {
                 .status(400)
                 .json({ message: "Quiz with this name already exists." });
         }
-        
+
         // Validate questions array
         if (!Array.isArray(questions) || questions.length === 0) {
             return res.status(400).json({
@@ -135,11 +144,20 @@ router.post("/addQuiz", async (req, res) => {
             }
         }
 
+        // Optional: Validate allowedStudents if needed
+        if (allowedStudents && !Array.isArray(allowedStudents)) {
+            return res.status(400).json({
+                message: "'allowedStudents' must be an array of student IDs.",
+            });
+        }
+
         const quizId = generateQuizId(quizName);
+
         const newQuiz = new Quiz({
             quizName,
             quizId,
             questions,
+            allowedStudents, // 👈 add it to the new Quiz
         });
 
         await newQuiz.save();

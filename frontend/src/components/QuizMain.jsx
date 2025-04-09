@@ -1,91 +1,123 @@
 import React from "react";
 import {
-    Box,
-    Typography,
-    FormControl,
-    RadioGroup,
-    FormControlLabel,
-    Radio,
-    Button,
-    Stack, // Importing Stack from MUI for layout
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Typography,
 } from "@mui/material";
 
 const QuizMain = ({
-    question,
-    options,
-    selectedOption,
-    onAnswerSelect,
-    onMarkForReview,
-    onSubmitTest,
-    onPreviousQuestion, // Prop for previous button functionality
-    onNextQuestion, // Prop for next button functionality
+  question,
+  options,
+  selectedOption,
+  handleOptionChange,
+  handleNext,
+  handlePrevious,
+  handleMarkForReview,
+  handleSubmit,
 }) => {
-    const handleRadioChange = (event) => {
-        const value = event.target.value;
-        onAnswerSelect(value); // Select the new value
-    };
-
-    return (
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minheight: "100%",
+        pt: 6,
+        px: 0, // Removed horizontal padding
+      }}
+    >
+      {/* Question + Options + Navigation buttons */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          gap: 20,
+          mb: 25,
+        }}
+      >
+        {/* Question (Extreme Left) */}
         <Box
-            sx={{
-                padding:3,
-                backgroundColor: "#fff",
-                borderRadius: 2,
-                boxShadow: 2,
-                width: "80%",
-                height: "80%",
-                
-            }}
+          sx={{
+            flexShrink: 30,
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            pl: 0,
+            mr: 0,
+          }}
         >
-            <Typography variant="h5" gutterBottom>
-                {question}
-            </Typography>
-            <FormControl component="fieldset">
-                <RadioGroup
-                    value={selectedOption || ""} // Ensure it can handle empty string for deselection
-                    onClick={handleRadioChange} // Custom handler for deselection
-                >
-                    {options.map((option, index) => (
-                        <FormControlLabel
-                            key={index}
-                            value={option}
-                            control={
-                                <Radio 
-                                    color="primary"
-                                />
-                            } // MUI Radio component
-                            label={option}
-                            checked={selectedOption === option} // Ensure the correct option is checked
-                        />
-                    ))}
-                </RadioGroup>
-            </FormControl>
-            {/* Using Stack for horizontal alignment */}
-            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                <Button
-                    variant="outlined"
-                    color="primary" // Color for Previous button
-                    onClick={onPreviousQuestion}
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={onMarkForReview}
-                >
-                    Mark for Review
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="primary" // Color for Next button
-                    onClick={onNextQuestion}
-                >
-                    Next
-                </Button>
-            </Stack>
+          <Typography variant="h5" fontWeight="bold">
+            {question}
+          </Typography>
         </Box>
-    );
+
+        {/* Options + Navigation Buttons in Column */}
+        <Box
+          sx={{
+            width: "52%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: 2,
+          }}
+        >
+          <FormControl component="fieldset">
+            <RadioGroup
+              aria-label="quiz"
+              name="quiz"
+              value={selectedOption}
+              onChange={handleOptionChange}
+            >
+              {options?.map((option, index) => (
+  <FormControlLabel
+    key={index}
+    value={option}
+    control={<Radio />}
+    label={option}
+  />
+))}
+
+            </RadioGroup>
+          </FormControl>
+
+          {/* Navigation buttons directly under options */}
+          <Box sx={{ display: "flex", gap:2}}>
+            <Button variant="outlined" onClick={handlePrevious}>
+              Previous Question
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleMarkForReview}
+            >
+              Mark for Review
+            </Button>
+            <Button variant="outlined" onClick={handleNext}>
+              Next Question
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Submit Button Centered at Bottom */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "left",
+          mt: "auto",
+        }}
+      >
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          Submit Test
+        </Button>
+      </Box>
+    </Box>
+  );
 };
 
 export default QuizMain;

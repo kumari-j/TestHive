@@ -14,7 +14,12 @@ const userSchema = new Schema({
         required: true,
     },
     isAdmin: {
-        type:Boolean
+        type: Boolean,
+        default: false
+    },
+    assignedQuiz: {
+        type: Schema.Types.ObjectId,
+        ref: "Quiz"  // This links the user to a specific quiz
     }
 });
 

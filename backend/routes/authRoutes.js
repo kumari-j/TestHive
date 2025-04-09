@@ -43,8 +43,9 @@ router.post("/signup", async (req, res) => {
 });
 
 // Route for login
+// Route for login
 router.post("/login", async (req, res) => {
-    const { username, password, quizId } = req.body;
+    const { username, password } = req.body;
 
     try {
         // Find user by username
@@ -55,35 +56,27 @@ router.post("/login", async (req, res) => {
 
         // Check if the user is an admin
         if (user.isAdmin) {
-            // Generate an admin token
             const adminToken = jwt.sign(
                 { userId: user._id, isAdmin: true },
                 JWT_SECRET,
                 { expiresIn: "4h" }
             );
             return res.status(200).json({
-                    token: adminToken,
-                    isAdmin: true,
-                    username: user.username,
-                });
+                token: adminToken,
+                isAdmin: true,
+                username: user.username,
+            });
         }
 
-        // Verify password
-        // const isPasswordValid = await bcrypt.compare(password, user.password);
-        // if (!isPasswordValid) {
-        //     return res.status(400).json({ message: "Invalid password" });
-        // }
+        // Compare password (keeping plain-text for now as per your original)
         if (user.password !== password) {
             return res.status(400).json({ message: "Invalid password" });
         }
 
-       
-        
-
-        // Verify quiz ID for regular users (non-admins)
-        const quiz = await Quiz.findOne({ quizId });
+        // Find the quiz assigned to this student
+        const quiz = await Quiz.findOne({ allowedStudents: user._id });
         if (!quiz) {
-            return res.status(400).json({ message: "Invalid quiz ID" });
+            return res.status(403).json({ message: "No quiz assigned to this student." });
         }
 
         // Generate JWT token for a regular user
@@ -97,11 +90,14 @@ router.post("/login", async (req, res) => {
             token,
             isAdmin: false,
             username: user.username,
+            quizId: quiz.quizId, // Include this to use in frontend
         });
+
     } catch (error) {
         res.status(500).json({ message: "Server error during login" });
     }
 });
+
 
 
 
