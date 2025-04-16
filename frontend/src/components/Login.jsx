@@ -60,7 +60,7 @@ const Login = ({ setIsAuthenticated, setUsername, setIsAdmin, setQuizId }) => {
                     required
                 />
                 <TextField
-                    label="Date of Birth"
+                    label="Email ID"
                     type="password"
                     variant="outlined"
                     fullWidth

@@ -6,12 +6,14 @@ function Sidebar({ questions, navigateToQuestion, answeredCount, remainingTime }
         <Box
             sx={{
                 display: "flex",
+                flexDirection: "column",
                 position: "fixed",
                 right: 18,
                 top: 60,
-                width: "70%",
-                height: "auto",
+                width: "300px",
+                maxHeight: "calc(100vh - 60px)",
                 flexDirection: "column",
+                overflowY: "auto",
                 alignItems: "flex-end",
             }}
         >

@@ -76,11 +76,12 @@ router.post("/submit", async (req, res) => {
             );
 
             // Check if the answer is correct
-            const isCorrect =
-            question &&
-            answer.selectedOption.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
-            if (isCorrect) score += 1;
-
+            let isCorrect = false;
+            if (question && answer.selectedOption) {
+              isCorrect = answer.selectedOption === question.correctAnswer;
+              if (isCorrect) score += 1;
+            }
+            
             // Push the answer details to resultAnswers
             resultAnswers.push({
                 questionId: answer.questionId,

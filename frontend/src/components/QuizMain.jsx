@@ -22,9 +22,9 @@ const QuizMain = ({
   return (
     <Box
       sx={{
+        flex: 1,
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
         pt: 6,
         px: 0, // Removed horizontal padding
         overflow: "hidden", 
