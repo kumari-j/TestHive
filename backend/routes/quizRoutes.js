@@ -87,7 +87,7 @@ console.log("Selected:", answer.selectedOption, "Correct:", question.correctAnsw
             // Push the answer details to resultAnswers
             resultAnswers.push({
                 questionId: answer.questionId,
-                selectedOption: selected,
+                selectedOption: answer.selectedOption,
                 isCorrect: isCorrect,
             });
         });
