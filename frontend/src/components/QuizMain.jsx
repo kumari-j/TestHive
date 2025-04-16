@@ -110,7 +110,7 @@ const QuizMain = ({
         sx={{
           display: "flex",
           justifyContent: "left",
-          mt: "auto",
+          mt: 0,
         }}
       >
         <Button variant="contained" color="primary" onClick={handleSubmit}>
