@@ -31,9 +31,15 @@ function App() {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
+        const token = localStorage.getItem("token");
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL}/api/quiz/questions`,
-          { params: { quizId } }
+          {
+            params: { quizId },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const fetchedQuestions = response.data.map((q) => ({
           ...q,
