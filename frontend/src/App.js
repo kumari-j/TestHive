@@ -159,9 +159,9 @@ function App() {
       const timeTakenToComplete = quizDuration - remainingTime;
       setTimeTaken(timeTakenToComplete);
 
-      const formattedAnswers = questions.map((q) => ({
+      const formattedAnswers = questions.map((q, index) => ({
         questionId: q._id,
-        selectedOption: q.selectedOption || "",
+        selectedOption: selectedAnswers[index] || "",
       }));
 
       const response = await axios.post(

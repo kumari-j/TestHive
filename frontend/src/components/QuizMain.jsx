@@ -24,9 +24,10 @@ const QuizMain = ({
       sx={{
         display: "flex",
         flexDirection: "column",
-        minheight: "100%",
+        height: "100vh",
         pt: 6,
         px: 0, // Removed horizontal padding
+        overflow: "hidden", 
       }}
     >
       {/* Question + Options + Navigation buttons */}
