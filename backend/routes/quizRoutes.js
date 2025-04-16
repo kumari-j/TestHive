@@ -74,7 +74,7 @@ router.post("/submit", async (req, res) => {
             const question = quiz.questions.find(
                 (q) => q._id.toString() === answer.questionId
             );
-console.log("Selected:", answer.selectedOption, "Correct:", question.correctAnswer);
+
             // Check if the answer is correct
          let isCorrect = false;
 if (question && answer.selectedOption) {
