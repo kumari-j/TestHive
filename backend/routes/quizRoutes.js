@@ -44,7 +44,7 @@ router.get("/questions", authenticateUser, async (req, res) => {
 // Route to submit answers and calculate the score
 router.post("/submit", async (req, res) => {
     const { username, quizId, answers, timeTaken } = req.body;
-    
+    console.log("Bkend"+timeTaken);
     
     // Validate required fields
     if (
@@ -69,20 +69,20 @@ router.post("/submit", async (req, res) => {
         }
 
         // Loop through each answer provided by the user
-   
-
         answers.forEach((answer) => {
-            const question = questions.find(
+            // Find the question in the quiz's questions array
+            const question = quiz.questions.find(
                 (q) => q._id.toString() === answer.questionId
             );
 
-            const isCorrect =
-                question && answer.selectedOption === question.correctAnswer;
+            // Check if the answer is correct
+         const isCorrect = false;
+if (question && answer.selectedOption) {
+  isCorrect = answer.selectedOption === question.correctAnswer;
+  if (isCorrect) score += 1;
+}
 
-            if (isCorrect) {
-                score += 1;
-            }
-
+            // Push the answer details to resultAnswers
             resultAnswers.push({
                 questionId: answer.questionId,
                 selectedOption: answer.selectedOption,
@@ -90,6 +90,7 @@ router.post("/submit", async (req, res) => {
             });
         });
 
+        // Create a new Result document
         const result = new Result({
             username,
             quizId,
@@ -98,8 +99,6 @@ router.post("/submit", async (req, res) => {
             answers: resultAnswers,
             completedAt: new Date(),
         });
-
-       
 
         // Save the result document
         await result.save();

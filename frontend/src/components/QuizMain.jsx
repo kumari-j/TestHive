@@ -27,7 +27,7 @@ const QuizMain = ({
         flexDirection: "column",
         pt: 6,
         px: 0, // Removed horizontal padding
-        overflow: "hidden", 
+        height: '100%', overflowY: 'auto' 
       }}
     >
       {/* Question + Options + Navigation buttons */}
@@ -38,7 +38,7 @@ const QuizMain = ({
           justifyContent: "flex-start",
           alignItems: "flex-start",
           gap: 20,
-          mb: 25,
+          mb: 4,
         }}
       >
         {/* Question (Extreme Left) */}
