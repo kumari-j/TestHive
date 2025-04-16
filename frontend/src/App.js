@@ -165,6 +165,12 @@ function App() {
           quizId,
           answers: formattedAnswers,
           timeTaken: timeTakenToComplete,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+
         }
       );
 

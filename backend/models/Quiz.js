@@ -1,5 +1,3 @@
-// backend/models/Quiz.js
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -33,12 +31,27 @@ const quizSchema = new Schema({
     },
     questions: [questionSchema],
     allowedStudents: [
-  {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
-]
-,
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    startDate: {
+        type: Date,
+        required: false, // <-- Made optional
+    },
+    totalMarks: {
+        type: Number,
+        required: false, // <-- Made optional
+    },
+    negativeMarking: {
+        type: Number,
+        default: 0,
+    },
+    totalDuration: {
+        type: Number, // in minutes
+        required: false, // <-- Made optional
+    },
     createdAt: {
         type: Date,
         default: Date.now,

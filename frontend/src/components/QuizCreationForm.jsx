@@ -1,5 +1,5 @@
 // /frontend/src/components/QuizCreation.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
     Box,
@@ -12,7 +12,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useEffect } from "react";
 
 const QuizCreationForm = () => {
     const [students, setStudents] = useState([]);
@@ -22,29 +21,29 @@ const QuizCreationForm = () => {
     const [questions, setQuestions] = useState([]);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [totalMarks, setTotalMarks] = useState("");
+    const [negativeMarking, setNegativeMarking] = useState("");
+    const [duration, setDuration] = useState("");
 
-    
+    useEffect(() => {
+        const fetchStudents = async () => {
+            setLoadingStudents(true);
+            try {
+                const res = await axios.get(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/users/students`
+                );
+                setStudents(res.data);
+            } catch (err) {
+                console.error("Failed to fetch students:", err);
+            } finally {
+                setLoadingStudents(false);
+            }
+        };
 
-useEffect(() => {
-    const fetchStudents = async () => {
-        setLoadingStudents(true);
-        try {
-            const res = await axios.get(
-                `${process.env.REACT_APP_BACKEND_URL}/api/users/students`
-            );
-            setStudents(res.data); // Array of user objects
-        } catch (err) {
-            console.error("Failed to fetch students:", err);
-        } finally {
-            setLoadingStudents(false);
-        }
-    };
+        fetchStudents();
+    }, []);
 
-    fetchStudents();
-}, []);
-
-
-    // Function to add a new question
     const addQuestion = () => {
         setQuestions([
             ...questions,
@@ -52,32 +51,32 @@ useEffect(() => {
         ]);
     };
 
-    // Function to handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
         setMessage("");
         setError("");
 
-        // Check current state of questions before sending
         console.log(questions);
 
         try {
-            // Send quiz data to backend
             const response = await axios.post(
                 `${process.env.REACT_APP_BACKEND_URL}/api/quiz/addQuiz`,
                 {
                     quizName,
                     questions,
                     allowedStudents: selectedStudents.map((student) => student._id),
+                    startDate,
+                    totalMarks,
+                    negativeMarking,
+                    totalDuration: duration,
                 }
             );
-            
 
             if (response.status === 201) {
                 setMessage(
                     `Quiz created successfully! Quiz ID: ${response.data.quizId}`
                 );
-                setQuizName(""); // Reset the form fields
+                setQuizName("");
                 setQuestions([]);
             }
         } catch (err) {
@@ -89,7 +88,6 @@ useEffect(() => {
         }
     };
 
-    // Function to handle input changes in the quiz name and questions
     const handleQuizNameChange = (event) => {
         setQuizName(event.target.value);
     };
@@ -116,7 +114,6 @@ useEffect(() => {
         setQuestions(updatedQuestions);
     };
 
-    // Function to remove a question
     const removeQuestion = (index) => {
         setQuestions(questions.filter((_, i) => i !== index));
     };
@@ -125,52 +122,78 @@ useEffect(() => {
         <Box sx={{ maxWidth: "800px", margin: "auto", padding: "20px" }}>
             <Paper elevation={3} sx={{ padding: "20px" }}>
                 <Typography variant="h4" gutterBottom>
-                    Quiz Creation Form
+                    Exam Creation Form
                 </Typography>
 
-                <TextField
-                    label="Quiz Name"
-                    value={quizName}
-                    onChange={handleQuizNameChange}
-                    fullWidth
-                    required
-                    margin="normal"
-                />
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        label="Exam Name"
+                        value={quizName}
+                        onChange={handleQuizNameChange}
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
 
-                {questions.map((question, qIndex) => (
-                    <Box
-                        key={qIndex}
-                        sx={{
-                            marginTop: "20px",
-                            padding: "15px",
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
+                    <TextField
+                        label="Start Date"
+                        type="datetime-local"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        fullWidth
+                        required
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
                         }}
-                    >
-                        <TextField
-                            label={`Question ${qIndex + 1}`}
-                            value={question.questionText}
-                            onChange={(e) =>
-                                handleQuestionChange(
-                                    qIndex,
-                                    "questionText",
-                                    e.target.value
-                                )
-                            }
-                            fullWidth
-                            required
-                            margin="normal"
-                        />
+                    />
 
-                        {question.options.map((option, oIndex) => (
+                    <TextField
+                        label="Total Marks"
+                        type="number"
+                        value={totalMarks}
+                        onChange={(e) => setTotalMarks(e.target.value)}
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
+
+                    <TextField
+                        label="Negative Marking (per question)"
+                        type="number"
+                        value={negativeMarking}
+                        onChange={(e) => setNegativeMarking(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+
+                    <TextField
+                        label="Duration (minutes)"
+                        type="number"
+                        value={duration}
+                        onChange={(e) => setDuration(e.target.value)}
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
+
+                    {questions.map((question, qIndex) => (
+                        <Box
+                            key={qIndex}
+                            sx={{
+                                marginTop: "20px",
+                                padding: "15px",
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                            }}
+                        >
                             <TextField
-                                key={oIndex}
-                                label={`Option ${oIndex + 1}`}
-                                value={option}
+                                label={`Question ${qIndex + 1}`}
+                                value={question.questionText}
                                 onChange={(e) =>
-                                    handleOptionChange(
+                                    handleQuestionChange(
                                         qIndex,
-                                        oIndex,
+                                        "questionText",
                                         e.target.value
                                     )
                                 }
@@ -178,69 +201,95 @@ useEffect(() => {
                                 required
                                 margin="normal"
                             />
-                        ))}
 
-                        <TextField
-                            label="Correct Answer (Enter Option Number)"
-                            value={question.correctAnswer}
-                            onChange={(e) =>
-                                handleQuestionChange(
-                                    qIndex,
-                                    "correctAnswer",
-                                    e.target.value
-                                )
-                            }
-                            fullWidth
-                            required
-                            margin="normal"
-                        />
+                            {question.options.map((option, oIndex) => (
+                                <TextField
+                                    key={oIndex}
+                                    label={`Option ${oIndex + 1}`}
+                                    value={option}
+                                    onChange={(e) =>
+                                        handleOptionChange(
+                                            qIndex,
+                                            oIndex,
+                                            e.target.value
+                                        )
+                                    }
+                                    fullWidth
+                                    required
+                                    margin="normal"
+                                />
+                            ))}
 
-                        <IconButton
-                            onClick={() => removeQuestion(qIndex)}
-                            color="error"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Box>
-                ))}
+                            <TextField
+                                label="Correct Answer (Enter Option Number)"
+                                value={question.correctAnswer}
+                                onChange={(e) =>
+                                    handleQuestionChange(
+                                        qIndex,
+                                        "correctAnswer",
+                                        e.target.value
+                                    )
+                                }
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
 
-                <Button
-                    variant="outlined"
-                    onClick={addQuestion}
-                    sx={{ marginTop: "20px" }}
-                >
-                    Add Question
-                </Button>
-                <Autocomplete
-    multiple
-    options={students}
-    getOptionLabel={(option) => option.username}
-    value={selectedStudents}
-    onChange={(event, newValue) => setSelectedStudents(newValue)}
-    loading={loadingStudents}
-    renderInput={(params) => (
-        <TextField
-            {...params}
-            label="Select Students"
-            placeholder="Choose students to assign quiz"
-            margin="normal"
-        />
-    )}
-    sx={{ marginTop: "20px" }}
-/>
-   
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}
-                    sx={{ marginTop: "20px", marginLeft: "10px" }}
-                >
-                    Submit Quiz
-                </Button>
+                            <IconButton
+                                onClick={() => removeQuestion(qIndex)}
+                                color="error"
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
+                    ))}
 
-                {message && <Typography color="green">{message}</Typography>}
-                {error && <Typography color="red">{error}</Typography>}
+                    <Button
+                        variant="outlined"
+                        onClick={addQuestion}
+                        sx={{ marginTop: "20px" }}
+                    >
+                        Add Question
+                    </Button>
+
+                    <Autocomplete
+                        multiple
+                        options={students}
+                        getOptionLabel={(option) => option.username}
+                        value={selectedStudents}
+                        onChange={(event, newValue) => setSelectedStudents(newValue)}
+                        loading={loadingStudents}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Select Students"
+                                placeholder="Choose students to assign quiz"
+                                margin="normal"
+                            />
+                        )}
+                        sx={{ marginTop: "20px" }}
+                    />
+
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        sx={{ marginTop: "20px", marginLeft: "10px" }}
+                    >
+                        Submit Exam
+                    </Button>
+
+                    {message && (
+                        <Typography color="green" sx={{ marginTop: "10px" }}>
+                            {message}
+                        </Typography>
+                    )}
+                    {error && (
+                        <Typography color="red" sx={{ marginTop: "10px" }}>
+                            {error}
+                        </Typography>
+                    )}
+                </form>
             </Paper>
         </Box>
     );
