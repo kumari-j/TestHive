@@ -77,7 +77,7 @@ const QuizMain = ({
               {options?.map((option, index) => (
   <FormControlLabel
     key={index}
-    value={option}
+    value={index + 1}
     control={<Radio />}
     label={option}
   />
