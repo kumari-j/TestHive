@@ -232,7 +232,7 @@ function App() {
                     remainingTime={formatTime(remainingTime)}
                   />
                 </Box>
-                <Box sx={{flexShrink: 0 }}>
+                <Box sx={{display: "flex", height: "calc(100vh - 64px)", mt: '64px', px: 2 }}>
                   <QuizMain
                     question={questions[currentQuestionIndex]?.questionText}
                     options={questions[currentQuestionIndex]?.options}
