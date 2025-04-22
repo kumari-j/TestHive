@@ -1,106 +1,84 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
-  Typography,
   Button,
-  RadioGroup,
+  FormControl,
   FormControlLabel,
   Radio,
-  FormControl,
-  Paper,
+  RadioGroup,
+  Typography,
+  Divider,
 } from "@mui/material";
-import axios from "axios";
 
-const QuizMain = () => {
-  const [questions, setQuestions] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState("");
-
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const response = await axios.get("/api/questions");
-        setQuestions(response.data);
-      } catch (error) {
-        console.error("Error fetching questions", error);
-      }
-    };
-
-    fetchQuestions();
-  }, []);
-
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
-
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setSelectedOption(""); // Optional: reset option
-    }
-  };
-
-  const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setSelectedOption(""); // Optional: reset option
-    }
-  };
-
-  const handleMarkForReview = () => {
-    // Add review logic
-    console.log("Marked for review:", currentIndex);
-  };
-
-  const handleSubmit = () => {
-    // Submit logic
-    console.log("Submitting test...");
-  };
-
-  if (questions.length === 0) return <div>Loading...</div>;
-
-  const currentQuestion = questions[currentIndex];
-  const { question, options } = currentQuestion;
-
+const QuizMain = ({
+  question,
+  options,
+  selectedOption,
+  handleOptionChange,
+  handleNext,
+  handlePrevious,
+  handleMarkForReview,
+  handleSubmit,
+}) => {
   return (
-    <Paper elevation={2} sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 3 }}>
-      {/* Question Number */}
-      <Typography variant="h6" mb={2}>
-        Question {currentIndex + 1} of {questions.length}
-      </Typography>
-
-      {/* Question & Options with Divider */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh", // full height
+        overflow: "hidden",
+        pl: "16px", // Adjust if needed for sidebar padding
+        pr: "16px",
+      }}
+    >
+      {/* Question + Options */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          gap: 4,
+          flexDirection: { xs: "column", md: "row" },
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 4, // responsive gap
           flexGrow: 1,
           overflowY: "auto",
-          pb: 10, // padding bottom to prevent hiding behind footer
+          pb: 10, // leave space for footer
         }}
       >
         {/* Question */}
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ flex: 1, minWidth: "250px" }}>
           <Typography variant="h5" fontWeight="bold">
             {question}
           </Typography>
         </Box>
 
-        {/* Divider */}
-        <Box
+        {/* Vertical Divider */}
+        <Divider
+          orientation="vertical"
+          flexItem
           sx={{
-            width: "1px",
-            bgcolor: "#ccc",
-            mx: 1,
-            height: "100%",
+            display: { xs: "none", md: "block" },
+            borderColor: "grey.300",
+            mx: 2,
           }}
         />
 
-        {/* Options */}
-        <Box sx={{ flex: 2 }}>
+        {/* Options + Navigation */}
+        <Box
+          sx={{
+            flex: 2,
+            minWidth: "300px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
           <FormControl component="fieldset">
-            <RadioGroup value={selectedOption} onChange={handleOptionChange}>
+            <RadioGroup
+              aria-label="quiz"
+              name="quiz"
+              value={selectedOption}
+              onChange={handleOptionChange}
+            >
               {options?.map((option, index) => (
                 <FormControlLabel
                   key={index}
@@ -114,39 +92,44 @@ const QuizMain = () => {
         </Box>
       </Box>
 
-      {/* Fixed Bottom Navigation */}
+      {/* Footer Button Bar */}
       <Box
         sx={{
           position: "fixed",
           bottom: 0,
           left: 0,
-          width: "100%",
-          bgcolor: "#f5f5f5",
-          py: 1,
-          px: 2,
-          borderTop: "1px solid #ccc",
+          right: 0,
+          bgcolor: "#fff",
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          px: 4,
+          py: 2,
           zIndex: 1000,
         }}
       >
-        <Button variant="contained" color="error" onClick={handleSubmit}>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
           Submit Test
         </Button>
+
         <Box sx={{ display: "flex", gap: 2 }}>
           <Button variant="outlined" onClick={handlePrevious}>
-            Previous
+            Previous Question
           </Button>
-          <Button variant="outlined" color="secondary" onClick={handleMarkForReview}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleMarkForReview}
+          >
             Mark for Review
           </Button>
           <Button variant="outlined" onClick={handleNext}>
-            Next
+            Next Question
           </Button>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 
