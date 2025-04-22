@@ -33,7 +33,9 @@ const Login = ({ setIsAuthenticated, setUsername, setIsAdmin, setQuizId }) => {
                 if (!isAdmin && quizId) {
                     setQuizId(quizId);  // ✅ Pass quizId to parent
                 }
-
+                 if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+    }
                 navigate("/");
             }
         } catch (error) {
