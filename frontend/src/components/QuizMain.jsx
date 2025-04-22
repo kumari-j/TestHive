@@ -20,104 +20,91 @@ const QuizMain = ({
   handleSubmit,
 }) => {
   return (
+   <Box
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh", // full height
+    overflow: "hidden",
+    pl: "16px", // Adjust if needed for sidebar padding
+    pr: "16px",
+  }}
+>
+  {/* Question + Options */}
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: { xs: "column", md: "row" },
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      gap: 4, // responsive gap
+      flexGrow: 1,
+      overflowY: "auto",
+      pb: 2,
+    }}
+  >
+    {/* Question */}
+    <Box sx={{ flex: 1, minWidth: "250px" }}>
+      <Typography variant="h5" fontWeight="bold">
+        {question}
+      </Typography>
+    </Box>
+
+    {/* Options + Navigation */}
     <Box
       sx={{
-        flex: 1,
+        flex: 2,
+        minWidth: "300px",
         display: "flex",
         flexDirection: "column",
-        pt: 6,
-        px: 0, // Removed horizontal padding
-        height: '100%', overflowY: 'auto' 
+        gap: 2,
       }}
     >
-      {/* Question + Options + Navigation buttons */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-          gap: 20,
-          mb: 4,
-        }}
-      >
-        {/* Question (Extreme Left) */}
-        <Box
-          sx={{
-            flexShrink: 30,
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
-            pl: 0,
-            mr: 0,
-          }}
+      <FormControl component="fieldset">
+        <RadioGroup
+          aria-label="quiz"
+          name="quiz"
+          value={selectedOption}
+          onChange={handleOptionChange}
         >
-          <Typography variant="h5" fontWeight="bold">
-            {question}
-          </Typography>
-        </Box>
+          {options?.map((option, index) => (
+            <FormControlLabel
+              key={index}
+              value={index + 1}
+              control={<Radio />}
+              label={option}
+            />
+          ))}
+        </RadioGroup>
+      </FormControl>
 
-        {/* Options + Navigation Buttons in Column */}
-        <Box
-          sx={{
-            width: "52%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: 2,
-          }}
+      {/* Navigation Buttons */}
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        <Button variant="outlined" onClick={handlePrevious}>
+          Previous Question
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleMarkForReview}
         >
-          <FormControl component="fieldset">
-            <RadioGroup
-              aria-label="quiz"
-              name="quiz"
-              value={selectedOption}
-              onChange={handleOptionChange}
-            >
-              {options?.map((option, index) => (
-  <FormControlLabel
-    key={index}
-    value={index + 1}
-    control={<Radio />}
-    label={option}
-  />
-))}
-
-            </RadioGroup>
-          </FormControl>
-
-          {/* Navigation buttons directly under options */}
-          <Box sx={{ display: "flex", gap:2}}>
-            <Button variant="outlined" onClick={handlePrevious}>
-              Previous Question
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleMarkForReview}
-            >
-              Mark for Review
-            </Button>
-            <Button variant="outlined" onClick={handleNext}>
-              Next Question
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-
-      {/* Submit Button Centered at Bottom */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "left",
-          mt: 10,
-        }}
-      >
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit Test
+          Mark for Review
+        </Button>
+        <Button variant="outlined" onClick={handleNext}>
+          Next Question
         </Button>
       </Box>
     </Box>
+  </Box>
+
+  {/* Submit Button */}
+  <Box sx={{ pt: 2 }}>
+    <Button variant="contained" color="primary" onClick={handleSubmit}>
+      Submit Test
+    </Button>
+  </Box>
+</Box>
+
   );
 };
 
