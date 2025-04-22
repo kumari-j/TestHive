@@ -25,23 +25,23 @@ const QuizMain = ({
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh", // full height
+        height: "100vh",
         overflow: "hidden",
-        pl: "16px", // Adjust if needed for sidebar padding
+        pl: "16px",
         pr: "16px",
       }}
     >
-      {/* Question + Options */}
+      {/* Main Content */}
       <Box
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           justifyContent: "space-between",
           alignItems: "flex-start",
-          gap: 4, // responsive gap
+          gap: 4,
           flexGrow: 1,
           overflowY: "auto",
-          pb: 10, // leave space for footer
+          pb: 8, // space for footer
         }}
       >
         {/* Question */}
@@ -51,7 +51,7 @@ const QuizMain = ({
           </Typography>
         </Box>
 
-        {/* Vertical Divider */}
+        {/* Divider */}
         <Divider
           orientation="vertical"
           flexItem
@@ -62,7 +62,7 @@ const QuizMain = ({
           }}
         />
 
-        {/* Options + Navigation */}
+        {/* Options */}
         <Box
           sx={{
             flex: 2,
@@ -92,7 +92,7 @@ const QuizMain = ({
         </Box>
       </Box>
 
-      {/* Footer Button Bar */}
+      {/* Footer */}
       <Box
         sx={{
           position: "fixed",
@@ -105,26 +105,50 @@ const QuizMain = ({
           justifyContent: "space-between",
           alignItems: "center",
           px: 4,
-          py: 2,
+          py: 1, // reduced height
           zIndex: 1000,
         }}
       >
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        {/* Submit on the left */}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          sx={{ height: "36px", fontSize: "0.85rem" }}
+        >
           Submit Test
         </Button>
 
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <Button variant="outlined" onClick={handlePrevious}>
+        {/* Navigation from mid-right */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            justifyContent: "flex-start",
+            ml: "auto", // push to center-right
+            maxWidth: "600px",
+          }}
+        >
+          <Button
+            variant="outlined"
+            onClick={handlePrevious}
+            sx={{ height: "36px", fontSize: "0.85rem" }}
+          >
             Previous Question
           </Button>
           <Button
             variant="outlined"
             color="secondary"
             onClick={handleMarkForReview}
+            sx={{ height: "36px", fontSize: "0.85rem" }}
           >
             Mark for Review
           </Button>
-          <Button variant="outlined" onClick={handleNext}>
+          <Button
+            variant="outlined"
+            onClick={handleNext}
+            sx={{ height: "36px", fontSize: "0.85rem" }}
+          >
             Next Question
           </Button>
         </Box>
